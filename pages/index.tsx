@@ -18,6 +18,7 @@ export default function TennisSimulator() {
   const [noAdScoring, setNoAdScoring] = useState(false)
   const [matchTiebreak, setMatchTiebreak] = useState(false)
   const [fastFour, setFastFour] = useState(false)
+  const [bestOfFive, setBestOfFive] = useState(false)
 
   useEffect(() => {
     if (probA < 0) setProbA(0)
@@ -68,8 +69,9 @@ export default function TennisSimulator() {
   function simulateMatch(probA: number) {
     let setsA = 0, setsB = 0
     const score = []
-    while (setsA < 2 && setsB < 2) {
-      if (matchTiebreak && setsA === 1 && setsB === 1) {
+    const setsToWin = bestOfFive ? 3 : 2
+    while (setsA < setsToWin && setsB < setsToWin) {
+      if (matchTiebreak && setsA === setsToWin - 1 && setsB === setsToWin - 1) {
         const tiebreakResult = simulateTiebreak(probA, 10)
         score.push(tiebreakResult ? [1, 0] : [0, 1])
         return score
@@ -113,6 +115,7 @@ export default function TennisSimulator() {
     resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}\n`
 
     resultsText += "\nAdvanced settings:\n"
+    resultsText += `Best of 5 Sets: ${bestOfFive ? 'On' : 'Off'}\n`
     resultsText += `No-Ad Scoring: ${noAdScoring ? 'On' : 'Off'}\n`
     resultsText += `Match Tiebreak: ${matchTiebreak ? 'On' : 'Off'}\n`
     resultsText += `Fast 4 Format: ${fastFour ? 'On' : 'Off'}`
@@ -181,6 +184,14 @@ export default function TennisSimulator() {
                 </SheetDescription>
               </SheetHeader>
               <div className="grid gap-4 py-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="best-of-five"
+                    checked={bestOfFive}
+                    onCheckedChange={setBestOfFive}
+                  />
+                  <Label htmlFor="best-of-five">Best of 5 Sets</Label>
+                </div>
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="no-ad-scoring"
