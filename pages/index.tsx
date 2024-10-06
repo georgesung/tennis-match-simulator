@@ -54,9 +54,9 @@ export default function TennisSimulator() {
 
   function simulateMatch(probA: number) {
     let setsA = 0, setsB = 0
-    let score = []
+    const score = []
     while (setsA < 2 && setsB < 2) {
-      let setScore = simulateSet(probA)
+      const setScore = simulateSet(probA)
       score.push(setScore)
       if (setScore[0] > setScore[1]) setsA++; else setsB++
     }
@@ -69,8 +69,8 @@ export default function TennisSimulator() {
     let matchScoresText = ""
 
     for (let i = 0; i < numMatches; i++) {
-      let score = simulateMatch(probA)
-      let matchResult = score.map(set => set.join('-')).join(' ')
+      const score = simulateMatch(probA)
+      const matchResult = score.map(set => set.join('-')).join(' ')
       matchScoresText += `Match ${i + 1}: ${matchResult}\n`
 
       if (score.filter(set => set[0] > set[1]).length > score.filter(set => set[0] < set[1]).length) {
@@ -108,7 +108,7 @@ export default function TennisSimulator() {
         <CardContent>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="probA">Player A's win probability per point</Label>
+              <Label htmlFor="probA">Player A win probability per point</Label>
               <Input
                 id="probA"
                 type="number"
@@ -120,7 +120,7 @@ export default function TennisSimulator() {
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="probB">Player B's win probability per point</Label>
+              <Label htmlFor="probB">Player B win probability per point</Label>
               <Input
                 id="probB"
                 type="number"
