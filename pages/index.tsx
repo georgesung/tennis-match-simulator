@@ -90,7 +90,7 @@ export default function TennisSimulator() {
     const avgGamesPerSetB = totalGamesB / totalSets
 
     let resultsText = `Player A won ${winsA} out of ${numMatches} matches.\n`
-    resultsText += `Player A match win probability: ${winProbA.toFixed(2)}\n`
+    resultsText += `Player A match win probability: ${winProbA.toFixed(4)}\n`
     resultsText += `Average games won per set:\n`
     resultsText += `Player A: ${avgGamesPerSetA.toFixed(2)}\n`
     resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}`
@@ -125,7 +125,7 @@ export default function TennisSimulator() {
               <Input
                 id="probB"
                 type="number"
-                value={(1 - probA).toFixed(2)}
+                value={(1 - probA).toFixed(4)}
                 readOnly
                 className="bg-muted"
               />
