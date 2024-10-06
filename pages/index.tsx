@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Github } from "lucide-react"
 
 export default function TennisSimulator() {
   const [probA, setProbA] = useState(0.55)
@@ -169,6 +170,18 @@ export default function TennisSimulator() {
           </CardContent>
         </Card>
       )}
+
+      <footer className="mt-8 text-center">
+        <a
+          href="https://github.com/georgesung/tennis-match-simulator"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary"
+        >
+          <Github className="mr-2 h-4 w-4" />
+          View source code on GitHub
+        </a>
+      </footer>
     </div>
   )
 }
