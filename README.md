@@ -16,6 +16,9 @@ In this simple web app, you can specify the per-point win probability of a playe
 
 This web app uses Next.js and shadcn/ui
 
+**Simulation caveats:**
+This simulation assumes every point has an equal win probability for a given player. It does not take into account different win probabilities when serving/receiving, when the score is close and a player is nervous, players tanking when it's a blowout, etc.
+
 ## Local development
 ```
 npm install
