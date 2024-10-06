@@ -31,7 +31,7 @@ const nextConfig = {
     unoptimized: true,
   },
   // for Github Pages
-  distDir: 'docs',
+  // distDir: 'docs',
   basePath: "/tennis-match-simulator",
 }
 
