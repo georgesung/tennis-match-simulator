@@ -12,7 +12,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 
 export default function TennisSimulator() {
   const [probA, setProbA] = useState(0.55)
-  const [numMatches, setNumMatches] = useState(10000)
+  const [numMatches, setNumMatches] = useState(100000)
   const [results, setResults] = useState("")
   const [matchScores, setMatchScores] = useState("")
   const [noAdScoring, setNoAdScoring] = useState(false)
