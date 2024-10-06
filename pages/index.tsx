@@ -6,13 +6,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Github } from "lucide-react"
+import { Github, Settings } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 export default function TennisSimulator() {
   const [probA, setProbA] = useState(0.55)
   const [numMatches, setNumMatches] = useState(10000)
   const [results, setResults] = useState("")
   const [matchScores, setMatchScores] = useState("")
+  const [noAdScoring, setNoAdScoring] = useState(false)
 
   useEffect(() => {
     if (probA < 0) setProbA(0)
@@ -27,6 +30,9 @@ export default function TennisSimulator() {
     let scoreA = 0, scoreB = 0
     while (true) {
       if (simulatePoint(probA)) scoreA++; else scoreB++
+      if (noAdScoring && scoreA === 3 && scoreB === 3) {
+        return simulatePoint(probA)
+      }
       if (scoreA >= 4 && scoreA >= scoreB + 2) return true
       if (scoreB >= 4 && scoreB >= scoreA + 2) return false
     }
@@ -93,7 +99,8 @@ export default function TennisSimulator() {
     resultsText += `Player A match win probability: ${winProbA.toFixed(4)}\n`
     resultsText += `Average games won per set:\n`
     resultsText += `Player A: ${avgGamesPerSetA.toFixed(2)}\n`
-    resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}`
+    resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}\n`
+    resultsText += `No-Ad Scoring: ${noAdScoring ? 'On' : 'Off'}`
 
     setResults(resultsText)
     setMatchScores(matchScoresText)
@@ -142,8 +149,34 @@ export default function TennisSimulator() {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="justify-between">
           <Button onClick={simulateMatches}>Simulate Matches</Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline">
+                <Settings className="mr-2 h-4 w-4" />
+                Advanced Settings
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Advanced Settings</SheetTitle>
+                <SheetDescription>
+                  Configure advanced options for the tennis match simulation.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="no-ad-scoring"
+                    checked={noAdScoring}
+                    onCheckedChange={setNoAdScoring}
+                  />
+                  <Label htmlFor="no-ad-scoring">No-Ad Scoring</Label>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </CardFooter>
       </Card>
 
