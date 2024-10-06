@@ -10,7 +10,7 @@ import { Github } from "lucide-react"
 
 export default function TennisSimulator() {
   const [probA, setProbA] = useState(0.55)
-  const [numMatches, setNumMatches] = useState(1000)
+  const [numMatches, setNumMatches] = useState(10000)
   const [results, setResults] = useState("")
   const [matchScores, setMatchScores] = useState("")
 
