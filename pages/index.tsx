@@ -16,6 +16,8 @@ export default function TennisSimulator() {
   const [results, setResults] = useState("")
   const [matchScores, setMatchScores] = useState("")
   const [noAdScoring, setNoAdScoring] = useState(false)
+  const [matchTiebreak, setMatchTiebreak] = useState(false)
+  const [fastFour, setFastFour] = useState(false)
 
   useEffect(() => {
     if (probA < 0) setProbA(0)
@@ -38,24 +40,28 @@ export default function TennisSimulator() {
     }
   }
 
-  function simulateTiebreak(probA: number) {
+  function simulateTiebreak(probA: number, points: number) {
     let scoreA = 0, scoreB = 0
     while (true) {
       if (simulatePoint(probA)) scoreA++; else scoreB++
-      if (scoreA >= 7 && scoreA >= scoreB + 2) return true
-      if (scoreB >= 7 && scoreB >= scoreA + 2) return false
+      if (scoreA >= points && scoreA >= scoreB + 2) return true
+      if (scoreB >= points && scoreB >= scoreA + 2) return false
     }
   }
 
   function simulateSet(probA: number) {
     let gamesA = 0, gamesB = 0
+    const gamesNeeded = fastFour ? 4 : 6
+    const tiebreakAt = fastFour ? 3 : 6
+
     while (true) {
       if (simulateGame(probA)) gamesA++; else gamesB++
-      if (gamesA === 6 && gamesB === 6) {
-        return simulateTiebreak(probA) ? [7, 6] : [6, 7]
+      if (gamesA === tiebreakAt && gamesB === tiebreakAt) {
+        return simulateTiebreak(probA, 7) ? [gamesA + 1, gamesB] : [gamesA, gamesB + 1]
       }
-      if (gamesA >= 6 && gamesA >= gamesB + 2) return [gamesA, gamesB]
-      if (gamesB >= 6 && gamesB >= gamesA + 2) return [gamesA, gamesB]
+      if (gamesA >= gamesNeeded && gamesA >= gamesB + 2) return [gamesA, gamesB]
+      if (gamesB >= gamesNeeded && gamesB >= gamesA + 2) return [gamesA, gamesB]
+      if (fastFour && (gamesA === 4 || gamesB === 4)) return [gamesA, gamesB]
     }
   }
 
@@ -63,6 +69,11 @@ export default function TennisSimulator() {
     let setsA = 0, setsB = 0
     const score = []
     while (setsA < 2 && setsB < 2) {
+      if (matchTiebreak && setsA === 1 && setsB === 1) {
+        const tiebreakResult = simulateTiebreak(probA, 10)
+        score.push(tiebreakResult ? [1, 0] : [0, 1])
+        return score
+      }
       const setScore = simulateSet(probA)
       score.push(setScore)
       if (setScore[0] > setScore[1]) setsA++; else setsB++
@@ -100,7 +111,9 @@ export default function TennisSimulator() {
     resultsText += `Average games won per set:\n`
     resultsText += `Player A: ${avgGamesPerSetA.toFixed(2)}\n`
     resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}\n`
-    resultsText += `No-Ad Scoring: ${noAdScoring ? 'On' : 'Off'}`
+    resultsText += `No-Ad Scoring: ${noAdScoring ? 'On' : 'Off'}\n`
+    resultsText += `Match Tiebreak: ${matchTiebreak ? 'On' : 'Off'}\n`
+    resultsText += `Fast 4 Format: ${fastFour ? 'On' : 'Off'}`
 
     setResults(resultsText)
     setMatchScores(matchScoresText)
@@ -173,6 +186,22 @@ export default function TennisSimulator() {
                     onCheckedChange={setNoAdScoring}
                   />
                   <Label htmlFor="no-ad-scoring">No-Ad Scoring</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="match-tiebreak"
+                    checked={matchTiebreak}
+                    onCheckedChange={setMatchTiebreak}
+                  />
+                  <Label htmlFor="match-tiebreak">Match Tiebreak</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="fast-four"
+                    checked={fastFour}
+                    onCheckedChange={setFastFour}
+                  />
+                  <Label htmlFor="fast-four">Fast 4 Format</Label>
                 </div>
               </div>
             </SheetContent>
