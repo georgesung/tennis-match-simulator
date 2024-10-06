@@ -30,7 +30,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // for Github Pages
   distDir: 'docs',
+  basePath: "/tennis-match-simulator",
 }
 
 module.exports = nextConfig
