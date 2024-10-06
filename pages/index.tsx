@@ -1,115 +1,174 @@
-import Image from "next/image";
-import localFont from "next/font/local";
+"use client"
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { useState, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-export default function Home() {
+export default function TennisSimulator() {
+  const [probA, setProbA] = useState(0.55)
+  const [numMatches, setNumMatches] = useState(1000)
+  const [results, setResults] = useState("")
+  const [matchScores, setMatchScores] = useState("")
+
+  useEffect(() => {
+    if (probA < 0) setProbA(0)
+    if (probA > 1) setProbA(1)
+  }, [probA])
+
+  function simulatePoint(probA: number) {
+    return Math.random() < probA
+  }
+
+  function simulateGame(probA: number) {
+    let scoreA = 0, scoreB = 0
+    while (true) {
+      if (simulatePoint(probA)) scoreA++; else scoreB++
+      if (scoreA >= 4 && scoreA >= scoreB + 2) return true
+      if (scoreB >= 4 && scoreB >= scoreA + 2) return false
+    }
+  }
+
+  function simulateTiebreak(probA: number) {
+    let scoreA = 0, scoreB = 0
+    while (true) {
+      if (simulatePoint(probA)) scoreA++; else scoreB++
+      if (scoreA >= 7 && scoreA >= scoreB + 2) return true
+      if (scoreB >= 7 && scoreB >= scoreA + 2) return false
+    }
+  }
+
+  function simulateSet(probA: number) {
+    let gamesA = 0, gamesB = 0
+    while (true) {
+      if (simulateGame(probA)) gamesA++; else gamesB++
+      if (gamesA === 6 && gamesB === 6) {
+        return simulateTiebreak(probA) ? [7, 6] : [6, 7]
+      }
+      if (gamesA >= 6 && gamesA >= gamesB + 2) return [gamesA, gamesB]
+      if (gamesB >= 6 && gamesB >= gamesA + 2) return [gamesA, gamesB]
+    }
+  }
+
+  function simulateMatch(probA: number) {
+    let setsA = 0, setsB = 0
+    let score = []
+    while (setsA < 2 && setsB < 2) {
+      let setScore = simulateSet(probA)
+      score.push(setScore)
+      if (setScore[0] > setScore[1]) setsA++; else setsB++
+    }
+    return score
+  }
+
+  function simulateMatches() {
+    let winsA = 0
+    let totalGamesA = 0, totalGamesB = 0, totalSets = 0
+    let matchScoresText = ""
+
+    for (let i = 0; i < numMatches; i++) {
+      let score = simulateMatch(probA)
+      let matchResult = score.map(set => set.join('-')).join(' ')
+      matchScoresText += `Match ${i + 1}: ${matchResult}\n`
+
+      if (score.filter(set => set[0] > set[1]).length > score.filter(set => set[0] < set[1]).length) {
+        winsA++
+      }
+
+      totalSets += score.length
+      score.forEach(set => {
+        totalGamesA += set[0]
+        totalGamesB += set[1]
+      })
+    }
+
+    const winProbA = winsA / numMatches
+    const avgGamesPerSetA = totalGamesA / totalSets
+    const avgGamesPerSetB = totalGamesB / totalSets
+
+    let resultsText = `Player A won ${winsA} out of ${numMatches} matches.\n`
+    resultsText += `Player A match win probability: ${winProbA.toFixed(2)}\n`
+    resultsText += `Average games won per set:\n`
+    resultsText += `Player A: ${avgGamesPerSetA.toFixed(2)}\n`
+    resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}`
+
+    setResults(resultsText)
+    setMatchScores(matchScoresText)
+  }
+
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="container mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Tennis Match Simulator</CardTitle>
+          <CardDescription>Simulate tennis matches and analyze the results</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="probA">Player A's win probability per point</Label>
+              <Input
+                id="probA"
+                type="number"
+                value={probA}
+                onChange={(e) => setProbA(parseFloat(e.target.value))}
+                min={0}
+                max={1}
+                step={0.01}
+              />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="probB">Player B's win probability per point</Label>
+              <Input
+                id="probB"
+                type="number"
+                value={(1 - probA).toFixed(2)}
+                readOnly
+                className="bg-muted"
+              />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="numMatches">Number of matches to simulate</Label>
+              <Input
+                id="numMatches"
+                type="number"
+                value={numMatches}
+                onChange={(e) => setNumMatches(parseInt(e.target.value))}
+                min={1}
+              />
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={simulateMatches}>Simulate Matches</Button>
+        </CardFooter>
+      </Card>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      {results && (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle>Simulation Results</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre className="whitespace-pre-wrap">{results}</pre>
+          </CardContent>
+        </Card>
+      )}
+
+      {matchScores && (
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle>Match Scores</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[200px]">
+              <pre className="whitespace-pre-wrap">{matchScores}</pre>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      )}
     </div>
-  );
+  )
 }
