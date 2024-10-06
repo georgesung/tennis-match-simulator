@@ -111,6 +111,8 @@ export default function TennisSimulator() {
     resultsText += `Average games won per set:\n`
     resultsText += `Player A: ${avgGamesPerSetA.toFixed(2)}\n`
     resultsText += `Player B: ${avgGamesPerSetB.toFixed(2)}\n`
+
+    resultsText += "\nAdvanced settings:\n"
     resultsText += `No-Ad Scoring: ${noAdScoring ? 'On' : 'Off'}\n`
     resultsText += `Match Tiebreak: ${matchTiebreak ? 'On' : 'Off'}\n`
     resultsText += `Fast 4 Format: ${fastFour ? 'On' : 'Off'}`
