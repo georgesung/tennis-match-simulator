@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 export default function TennisSimulator() {
-  const [probA, setProbA] = useState(0.55)  // gsung TODO: use this state, don't pass those vars all over the place
+  const [probA, setProbA] = useState(0.55)
   const [probAServe, setProbAServe] = useState(0.60)
   const [probAReturn, setProbAReturn] = useState(0.50)
   const [numMatches, setNumMatches] = useState(100000)
@@ -167,7 +167,7 @@ export default function TennisSimulator() {
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
-            {!useAdvancedProb && (
+            {!useAdvancedProb ? (
               <>
                 <div className="flex flex-col space-y-1.5">
                   <Label htmlFor="probA">Player A win probability per point</Label>
@@ -189,6 +189,33 @@ export default function TennisSimulator() {
                     value={(1 - probA).toFixed(4)}
                     readOnly
                     className="bg-muted"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="probAServe">Player A serve win probability</Label>
+                  <Input
+                    id="probAServe"
+                    type="number"
+                    value={probAServe}
+                    onChange={(e) => setProbAServe(parseFloat(e.target.value))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="probAReturn">Player A return win probability</Label>
+                  <Input
+                    id="probAReturn"
+                    type="number"
+                    value={probAReturn}
+                    onChange={(e) => setProbAReturn(parseFloat(e.target.value))}
+                    min={0}
+                    max={1}
+                    step={0.01}
                   />
                 </div>
               </>
@@ -262,34 +289,6 @@ export default function TennisSimulator() {
                   />
                   <Label htmlFor="use-advanced-prob">Use Advanced Probabilities</Label>
                 </div>
-                {useAdvancedProb && (
-                  <>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="probAServe">Player A serve win probability</Label>
-                      <Input
-                        id="probAServe"
-                        type="number"
-                        value={probAServe}
-                        onChange={(e) => setProbAServe(parseFloat(e.target.value))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="probAReturn">Player A return win probability</Label>
-                      <Input
-                        id="probAReturn"
-                        type="number"
-                        value={probAReturn}
-                        onChange={(e) => setProbAReturn(parseFloat(e.target.value))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                      />
-                    </div>
-                  </>
-                )}
               </div>
             </SheetContent>
           </Sheet>
