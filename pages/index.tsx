@@ -32,47 +32,47 @@ export default function TennisSimulator() {
     if (probAReturn > 1) setProbAReturn(1)
   }, [probA, probAServe, probAReturn])
 
-  function simulatePoint(probA: number, isAServing: boolean) {
+  function simulatePoint(isAServing: boolean) {
     if (useAdvancedProb) {
       return Math.random() < (isAServing ? probAServe : probAReturn)
     }
     return Math.random() < probA
   }
 
-  function simulateGame(probA: number, isAServing: boolean) {
+  function simulateGame(isAServing: boolean) {
     let scoreA = 0, scoreB = 0
     while (true) {
-      if (simulatePoint(probA, isAServing)) scoreA++; else scoreB++
+      if (simulatePoint(isAServing)) scoreA++; else scoreB++
       if (noAdScoring && scoreA === 3 && scoreB === 3) {
-        return simulatePoint(probA, isAServing)
+        return simulatePoint(isAServing)
       }
       if (scoreA >= 4 && scoreA >= scoreB + 2) return true
       if (scoreB >= 4 && scoreB >= scoreA + 2) return false
     }
   }
 
-  function simulateTiebreak(probA: number, points: number, isAServingFirst: boolean) {
+  function simulateTiebreak(points: number, isAServingFirst: boolean) {
     let scoreA = 0, scoreB = 0
     let isAServing = isAServingFirst
     while (true) {
-      if (simulatePoint(probA, isAServing)) scoreA++; else scoreB++
+      if (simulatePoint(isAServing)) scoreA++; else scoreB++
       if (scoreA >= points && scoreA >= scoreB + 2) return true
       if (scoreB >= points && scoreB >= scoreA + 2) return false
       if ((scoreA + scoreB) % 2 === 1) isAServing = !isAServing
     }
   }
 
-  function simulateSet(probA: number, isAServingFirst: boolean) {
+  function simulateSet(isAServingFirst: boolean) {
     let gamesA = 0, gamesB = 0
     let isAServing = isAServingFirst
     const gamesNeeded = fastFour ? 4 : 6
     const tiebreakAt = fastFour ? 3 : 6
 
     while (true) {
-      if (simulateGame(probA, isAServing)) gamesA++; else gamesB++
+      if (simulateGame(isAServing)) gamesA++; else gamesB++
       isAServing = !isAServing
       if (gamesA === tiebreakAt && gamesB === tiebreakAt) {
-        return simulateTiebreak(probA, 7, isAServing) ? [gamesA + 1, gamesB] : [gamesA, gamesB + 1]
+        return simulateTiebreak(7, isAServing) ? [gamesA + 1, gamesB] : [gamesA, gamesB + 1]
       }
       if (gamesA >= gamesNeeded && gamesA >= gamesB + 2) return [gamesA, gamesB]
       if (gamesB >= gamesNeeded && gamesB >= gamesA + 2) return [gamesA, gamesB]
@@ -80,7 +80,7 @@ export default function TennisSimulator() {
     }
   }
 
-  function simulateMatch(probA: number) {
+  function simulateMatch() {
     let setsA = 0, setsB = 0
     const score = []
     const setsToWin = bestOfFive ? 3 : 2
@@ -88,12 +88,12 @@ export default function TennisSimulator() {
 
     while (setsA < setsToWin && setsB < setsToWin) {
       if (matchTiebreak && setsA === setsToWin - 1 && setsB === setsToWin - 1) {
-        const tiebreakResult = simulateTiebreak(probA, 10, isAServingFirst)
+        const tiebreakResult = simulateTiebreak(10, isAServingFirst)
         score.push(tiebreakResult ? [1, 0] : [0, 1])
         return score
       }
 
-      const setScore = simulateSet(probA, isAServingFirst)
+      const setScore = simulateSet(isAServingFirst)
       score.push(setScore)
       if (setScore[0] > setScore[1]) setsA++; else setsB++
 
@@ -116,7 +116,7 @@ export default function TennisSimulator() {
     let matchScoresText = ""
 
     for (let i = 0; i < numMatches; i++) {
-      const score = simulateMatch(probA)
+      const score = simulateMatch()
       const matchResult = score.map(set => set.join('-')).join(' ')
       matchScoresText += `Match ${i + 1}: ${matchResult}\n`
 
