@@ -146,7 +146,7 @@ export default function TennisSimulator() {
     resultsText += `No-Ad Scoring: ${noAdScoring ? 'On' : 'Off'}\n`
     resultsText += `Match Tiebreak: ${matchTiebreak ? 'On' : 'Off'}\n`
     resultsText += `Fast 4 Format: ${fastFour ? 'On' : 'Off'}\n`
-    resultsText += `Use Advanced Probabilities: ${useAdvancedProb ? 'On' : 'Off'}\n`
+    resultsText += `Serve/return win %: ${useAdvancedProb ? 'On' : 'Off'}\n`
     if (useAdvancedProb) {
       resultsText += `Player A Serve Win Probability: ${probAServe.toFixed(4)}\n`
       resultsText += `Player A Return Win Probability: ${probAReturn.toFixed(4)}\n`
@@ -287,7 +287,7 @@ export default function TennisSimulator() {
                     checked={useAdvancedProb}
                     onCheckedChange={setUseAdvancedProb}
                   />
-                  <Label htmlFor="use-advanced-prob">Use Advanced Probabilities</Label>
+                  <Label htmlFor="use-advanced-prob">Serve/return win %</Label>
                 </div>
               </div>
             </SheetContent>
