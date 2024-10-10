@@ -14,6 +14,7 @@ export default function TennisSimulator() {
   const [probA, setProbA] = useState(0.55)
   const [probAServe, setProbAServe] = useState(0.60)
   const [probAReturn, setProbAReturn] = useState(0.50)
+  const [probAServesFirst, setProbAServesFirst] = useState(0.5)
   const [numMatches, setNumMatches] = useState(100000)
   const [results, setResults] = useState("")
   const [matchScores, setMatchScores] = useState("")
@@ -30,7 +31,9 @@ export default function TennisSimulator() {
     if (probAServe > 1) setProbAServe(1)
     if (probAReturn < 0) setProbAReturn(0)
     if (probAReturn > 1) setProbAReturn(1)
-  }, [probA, probAServe, probAReturn])
+    if (probAServesFirst < 0) setProbAServesFirst(0)
+    if (probAServesFirst > 1) setProbAServesFirst(1)
+  }, [probA, probAServe, probAReturn, probAServesFirst])
 
   function simulatePoint(isAServing: boolean) {
     if (useAdvancedProb) {
@@ -84,7 +87,7 @@ export default function TennisSimulator() {
     let setsA = 0, setsB = 0
     const score = []
     const setsToWin = bestOfFive ? 3 : 2
-    let isAServingFirst = Math.random() < 0.5
+    let isAServingFirst = Math.random() < probAServesFirst
 
     while (setsA < setsToWin && setsB < setsToWin) {
       if (matchTiebreak && setsA === setsToWin - 1 && setsB === setsToWin - 1) {
@@ -150,6 +153,7 @@ export default function TennisSimulator() {
     if (useAdvancedProb) {
       resultsText += `Player A Serve Win Probability: ${probAServe.toFixed(4)}\n`
       resultsText += `Player A Return Win Probability: ${probAReturn.toFixed(4)}\n`
+      resultsText += `Player A Serves First Probability: ${probAServesFirst.toFixed(4)}\n`
     } else {
       resultsText += `Player A Point Win Probability: ${probA.toFixed(4)}\n`
     }
@@ -213,6 +217,18 @@ export default function TennisSimulator() {
                     type="number"
                     value={probAReturn}
                     onChange={(e) => setProbAReturn(parseFloat(e.target.value))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="probAServesFirst">Player A serves first probability</Label>
+                  <Input
+                    id="probAServesFirst"
+                    type="number"
+                    value={probAServesFirst}
+                    onChange={(e) => setProbAServesFirst(parseFloat(e.target.value))}
                     min={0}
                     max={1}
                     step={0.01}
