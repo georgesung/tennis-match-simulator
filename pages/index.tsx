@@ -336,24 +336,29 @@ export default function TennisSimulator() {
       )}
 
       <footer className="mt-8 text-center text-sm text-muted-foreground">
-        <a
-          href="https://www.georgesung.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-primary"
-        >
-          georgesung.com
-        </a>
-        <span className="mx-2">|</span>
-        <a
-          href="https://github.com/georgesung/tennis-match-simulator"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center hover:text-primary"
-        >
-          <Github className="mr-2 h-4 w-4" />
-          View source code on GitHub
-        </a>
+        <div className="mb-2">
+          <a
+            href="https://www.georgesung.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary"
+          >
+            georgesung.com
+          </a>
+          <span className="mx-2">|</span>
+          <a
+            href="https://github.com/georgesung/tennis-match-simulator"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center hover:text-primary"
+          >
+            <Github className="mr-2 h-4 w-4" />
+            View source code on GitHub
+          </a>
+        </div>
+        <p className="text-xs text-muted-foreground/80">
+          © {new Date().getFullYear()} Jou-ching (George) Sung
+        </p>
       </footer>
     </div>
   )
