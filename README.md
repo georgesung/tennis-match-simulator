@@ -30,6 +30,30 @@ Go to `http://localhost:3000`.
 ## Deploy to GitHub Pages
 You can host this simple web app for free on GitHub Pages, see instructions [here](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site). In the GitHub Pages settings, select "GitHub Actions" for build & deployment, and from there you can choose the default next.js app deployment setup.
 
+## Batch Simulation & Sweeping
+If you want to run parameter sweeps in an offline batch way to study the behavior of the S-curve under different game rules, you can use the standalone CLI scripts. Both the web UI and these offline scripts share the same modular simulation core located in `lib/simulator.ts` to ensure 100% logic consistency.
+
+### 1. Run the Parameter Sweep
+Run the TypeScript sweep script to simulate 5 distinct configurations (Standard match, Best of 5, No Ad, Match Tiebreak to 10, and Fast 4) across a range of point-win probabilities (0.40 to 0.60, 100,000 matches per step):
+```bash
+npx -y tsx scripts/sweep.ts
+```
+This generates a consolidated CSV database in `s_curve_data/sweep_results.csv`.
+
+### 2. Plot the Results
+Use the Python plotting script to parse the CSV and generate high-quality comparison curves:
+```bash
+python3 scripts/plot.py
+```
+
+This generates 6 comparison plots in the `s_curve_data/` directory:
+- `control_plot.png` — Standard Best of 3 S-Curve control plot.
+- `best_of_5_comparison.png` — Standard Best of 3 vs. Best of 5 Sets overlay.
+- `no_ad_comparison.png` — Standard Ad vs. No-Ad scoring overlay.
+- `match_tiebreak_comparison.png` — Standard 3rd Set vs. 10-Pt Match Tiebreak overlay.
+- `fast_four_comparison.png` — Standard 6-Game Sets vs. Fast 4 Format overlay.
+- `overall_comparison.png` — Master comparison overlay plot showing **all** scenarios together!
+
 ## Why did I build this?
 I've always felt like writing a simulator for this, since I've been curious about these questions for a long time (see above). However, I've been very lazy to put this together.
 
