@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Github, Settings } from "lucide-react"
 import { Switch } from "@/components/ui/switch"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { runSimulation } from "@/lib/simulator"
 
 export default function TennisSimulator() {
   const [probA, setProbA] = useState(0.55)
@@ -35,108 +36,26 @@ export default function TennisSimulator() {
     if (probAServesFirst > 1) setProbAServesFirst(1)
   }, [probA, probAServe, probAReturn, probAServesFirst])
 
-  function simulatePoint(isAServing: boolean) {
-    if (useAdvancedProb) {
-      return Math.random() < (isAServing ? probAServe : probAReturn)
-    }
-    return Math.random() < probA
-  }
-
-  function simulateGame(isAServing: boolean) {
-    let scoreA = 0, scoreB = 0
-    while (true) {
-      if (simulatePoint(isAServing)) scoreA++; else scoreB++
-      if (noAdScoring && scoreA === 3 && scoreB === 3) {
-        return simulatePoint(isAServing)
-      }
-      if (scoreA >= 4 && scoreA >= scoreB + 2) return true
-      if (scoreB >= 4 && scoreB >= scoreA + 2) return false
-    }
-  }
-
-  function simulateTiebreak(points: number, isAServingFirst: boolean) {
-    let scoreA = 0, scoreB = 0
-    let isAServing = isAServingFirst
-    while (true) {
-      if (simulatePoint(isAServing)) scoreA++; else scoreB++
-      if (scoreA >= points && scoreA >= scoreB + 2) return true
-      if (scoreB >= points && scoreB >= scoreA + 2) return false
-      if ((scoreA + scoreB) % 2 === 1) isAServing = !isAServing
-    }
-  }
-
-  function simulateSet(isAServingFirst: boolean) {
-    let gamesA = 0, gamesB = 0
-    let isAServing = isAServingFirst
-    const gamesNeeded = fastFour ? 4 : 6
-    const tiebreakAt = fastFour ? 3 : 6
-
-    while (true) {
-      if (simulateGame(isAServing)) gamesA++; else gamesB++
-      isAServing = !isAServing
-      if (gamesA === tiebreakAt && gamesB === tiebreakAt) {
-        return simulateTiebreak(7, isAServing) ? [gamesA + 1, gamesB] : [gamesA, gamesB + 1]
-      }
-      if (gamesA >= gamesNeeded && gamesA >= gamesB + 2) return [gamesA, gamesB]
-      if (gamesB >= gamesNeeded && gamesB >= gamesA + 2) return [gamesA, gamesB]
-      if (fastFour && (gamesA === 4 || gamesB === 4)) return [gamesA, gamesB]
-    }
-  }
-
-  function simulateMatch() {
-    let setsA = 0, setsB = 0
-    const score = []
-    const setsToWin = bestOfFive ? 3 : 2
-    let isAServingFirst = Math.random() < probAServesFirst
-
-    while (setsA < setsToWin && setsB < setsToWin) {
-      if (matchTiebreak && setsA === setsToWin - 1 && setsB === setsToWin - 1) {
-        const tiebreakResult = simulateTiebreak(10, isAServingFirst)
-        score.push(tiebreakResult ? [1, 0] : [0, 1])
-        return score
-      }
-
-      const setScore = simulateSet(isAServingFirst)
-      score.push(setScore)
-      if (setScore[0] > setScore[1]) setsA++; else setsB++
-
-      // Determine who serves first in the next set
-      const totalGames = setScore[0] + setScore[1]
-      if (totalGames % 2 === 0) {
-        // If the total number of games in the set is even, the same player serves first in the next set
-        isAServingFirst = isAServingFirst
-      } else {
-        // If the total number of games in the set is odd, the other player serves first in the next set
-        isAServingFirst = !isAServingFirst
-      }
-    }
-    return score
-  }
-
   function simulateMatches() {
-    let winsA = 0
-    let totalGamesA = 0, totalGamesB = 0, totalSets = 0
-    let matchScoresText = ""
-
-    for (let i = 0; i < numMatches; i++) {
-      const score = simulateMatch()
-      const matchResult = score.map(set => set.join('-')).join(' ')
-      matchScoresText += `Match ${i + 1}: ${matchResult}\n`
-
-      if (score.filter(set => set[0] > set[1]).length > score.filter(set => set[0] < set[1]).length) {
-        winsA++
-      }
-
-      totalSets += score.length
-      score.forEach(set => {
-        totalGamesA += set[0]
-        totalGamesB += set[1]
-      })
+    const config = {
+      probA,
+      probAServe,
+      probAReturn,
+      probAServesFirst,
+      numMatches,
+      noAdScoring,
+      matchTiebreak,
+      fastFour,
+      bestOfFive,
+      useAdvancedProb,
     }
 
-    const winProbA = winsA / numMatches
-    const avgGamesPerSetA = totalGamesA / totalSets
-    const avgGamesPerSetB = totalGamesB / totalSets
+    const { winsA, winProbA, avgGamesPerSetA, avgGamesPerSetB, matches } = runSimulation(config)
+
+    let matchScoresText = ""
+    matches.forEach((m, idx) => {
+      matchScoresText += `Match ${idx + 1}: ${m.scoreText}\n`
+    })
 
     let resultsText = `Player A won ${winsA} out of ${numMatches} matches.\n`
     resultsText += `Player A match win probability: ${winProbA.toFixed(4)}\n`
