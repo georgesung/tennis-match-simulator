@@ -86,3 +86,16 @@ create_comparison_plot(
         ('fast_four_match_win_prob', 'Fast 4', '#f59e0b', '--')
     ]
 )
+
+# 6. Overall Comparison Plot
+create_comparison_plot(
+    'overall_comparison.png',
+    '',
+    [
+        ('default_match_win_prob', 'Standard match', '#3b82f6', '-'),
+        ('best_of_5_match_win_prob', 'Best of 5', '#ef4444', '--'),
+        ('no_ad_match_win_prob', 'No Ad', '#10b981', '-.'),
+        ('match_tiebreak_match_win_prob', 'Match Tiebreak (to 10)', '#8b5cf6', ':'),
+        ('fast_four_match_win_prob', 'Fast 4', '#f59e0b', '--')
+    ]
+)
