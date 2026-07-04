@@ -20,21 +20,21 @@ def create_comparison_plot(filename, title_suffix, plots_to_draw):
     plots_to_draw is a list of tuples: (y_col_name, label_name, color, line_style)
     """
     plt.figure(figsize=(8, 6))
-    
+
     # Plot the requested lines
     for col, label, color, style in plots_to_draw:
         plt.plot(df['point_win_prob'], df[col], marker='o', color=color, linestyle=style, linewidth=2, label=label)
-        
+
     plt.axhline(0.5, color='gray', linestyle='--', alpha=0.5)
     plt.axvline(0.5, color='gray', linestyle='--', alpha=0.5)
-    
+
     title = f'Point Win Probability vs. Match Win Probability\n{title_suffix}\nNum simulated matches: {num_matches:,}'
     plt.title(title, fontsize=12, pad=15)
     plt.xlabel('Point Win Probability', fontsize=11)
     plt.ylabel('Match Win Probability', fontsize=11)
     plt.grid(True, alpha=0.3)
     plt.legend()
-    
+
     output_path = os.path.join(output_dir, filename)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
@@ -44,7 +44,7 @@ def create_comparison_plot(filename, title_suffix, plots_to_draw):
 create_comparison_plot(
     'control_plot.png',
     '(Control Settings)',
-    [('default_match_win_prob', 'Best of 3', '#3b82f6', '-')]
+    [('default_match_win_prob', 'Standard match', '#3b82f6', '-')]
 )
 
 # 2. Best of 5 Comparison
@@ -62,8 +62,8 @@ create_comparison_plot(
     'no_ad_comparison.png',
     '(Standard With-Ad vs. No-Ad Scoring)',
     [
-        ('default_match_win_prob', 'Best of 3 (Standard Ad)', '#3b82f6', '-'),
-        ('no_ad_match_win_prob', 'Best of 3 (No-Ad)', '#10b981', '--')
+        ('default_match_win_prob', 'Ad Scoring', '#3b82f6', '-'),
+        ('no_ad_match_win_prob', 'No Ad', '#10b981', '--')
     ]
 )
 
@@ -72,8 +72,8 @@ create_comparison_plot(
     'match_tiebreak_comparison.png',
     '(Standard Final Set vs. 10-Pt Match Tiebreak)',
     [
-        ('default_match_win_prob', 'Best of 3 (Standard)', '#3b82f6', '-'),
-        ('match_tiebreak_match_win_prob', 'Best of 3 (Match Tiebreak)', '#8b5cf6', '--')
+        ('default_match_win_prob', 'Full 3rd Set', '#3b82f6', '-'),
+        ('match_tiebreak_match_win_prob', 'Match Tiebreak (to 10)', '#8b5cf6', '--')
     ]
 )
 
@@ -82,7 +82,7 @@ create_comparison_plot(
     'fast_four_comparison.png',
     '(Standard 6-Game Sets vs. Fast 4 Format)',
     [
-        ('default_match_win_prob', 'Best of 3 (Standard)', '#3b82f6', '-'),
-        ('fast_four_match_win_prob', 'Best of 3 (Fast 4)', '#f59e0b', '--')
+        ('default_match_win_prob', 'Standard Sets', '#3b82f6', '-'),
+        ('fast_four_match_win_prob', 'Fast 4', '#f59e0b', '--')
     ]
 )
