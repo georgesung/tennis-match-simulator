@@ -14,7 +14,7 @@ Given the win probability of a player on each point, simulate multiple tennis ma
 
 In this simple web app, you can specify the per-point win probability of a player, and the number of matches to simulate. After the simulations are complete, you can see the number of matches won, and other interesting stats. All the logic runs inside your own browser.
 
-This web app uses Next.js and shadcn/ui
+Supplementary blog post [here](https://www.georgesung.com/tennis/tennis-match-simulator).
 
 **Simulation caveats:**
 This simulation assumes every point has an equal win probability for a given player. It does not take into account different win probabilities when serving/receiving, when the score is close and a player is nervous, players tanking when it's a blowout, etc.
