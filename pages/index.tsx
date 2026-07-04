@@ -257,12 +257,12 @@ export default function TennisSimulator() {
       <footer className="mt-8 text-center text-sm text-muted-foreground">
         <div className="mb-2">
           <a
-            href="https://www.georgesung.com"
+            href="https://www.georgesung.com/tennis/tennis-match-simulator"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-primary"
           >
-            georgesung.com
+            Blog post
           </a>
           <span className="mx-2">|</span>
           <a
