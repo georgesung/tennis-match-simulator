@@ -19,11 +19,11 @@ This web app uses Next.js and shadcn/ui
 **Simulation caveats:**
 This simulation assumes every point has an equal win probability for a given player. It does not take into account different win probabilities when serving/receiving, when the score is close and a player is nervous, players tanking when it's a blowout, etc.
 
-### Point Win Probability vs. Match Win Probability (The S-Curve)
+### Point win probability vs. match win probability, and S-curves
 
-Under standard rules (Best of 3 sets, standard With-Ad scoring, full 3rd set), a slight edge in point-win probability is dramatically amplified into a massive match-win probability. This is the classic **S-Curve** of tennis scoring:
-- If Player A has a **50%** chance of winning any individual point, they have exactly a **50%** chance of winning the match.
-- If Player A's point-win probability increases by just 3% to **53%**, the scoring system amplifies this slight edge into an overwhelming **~79%** match-win probability.
+Under standard tennis scoring rules (best of 3 sets, standard ad scoring, full 3rd set), a slight edge in point-win probability translates into a significantly larger edge in match-win probability:
+- If a player has a 50% chance of winning any individual point, they have exactly a 50% chance of winning the match.
+- If a player's point-win probability increases by just 3% to 53%, they have a **79%** match-win probability.
 
 Here are some more results, based on 100,000 simulated matches for each row under standard rules:
 
@@ -39,13 +39,13 @@ Here are some more results, based on 100,000 simulated matches for each row unde
 | **67** | 100 | 6.00 - 0.97 | Equivalent to winning 10-5 in a tiebreak; ~6-1 expected set score |
 | **72** | 100 | 6.00 - 0.50 | Opponent is expected to win only one game in the entire match |
 
-This simulator allows us to change match settings by toggling different variables (such as Best of 5 sets, No-Ad scoring, Match Tiebreak to 10 points in the final set, and the Fast 4 format). Below is an overall overlay comparing how each of these scoring variations alters the S-Curve behavior relative to the standard setup:
+This simulator allows us to change match settings by toggling different variables (such as best of 5 sets, no-ad scoring, match tiebreak to 10 points in lieu of the final set, and the Fast 4 format). Below is an overall overlay comparing how each of these scoring variations alters the S-curve behavior relative to the standard setup:
 
 ![Tennis S-Curve Comparison Plot](./s_curve_data/overall_comparison.png)
 
 From this chart, we can observe interesting scoring effects:
 - **Best of 5 sets (red dashed line)** makes the S-curve even steeper, further rewarding the player with the statistical point edge.
-- **Fast 4 (yellow dashed line)**, **Match Tiebreak to 10 (purple dotted line)**, and **No-Ad scoring (green dash-dot line)** reduce the number of points/games played, which introduces more variance and flattens the S-curve (giving the underdog a better chance).
+- **Fast 4 (yellow dashed line)**, **match tiebreak to 10 (purple dotted line)**, and **no-ad scoring (green dash-dot line)** reduce the number of points/games played, which introduces more variance and flattens the S-curve (giving the underdog a better chance).
 
 ## Local development
 ```
