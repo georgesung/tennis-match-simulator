@@ -19,19 +19,23 @@ def create_comparison_plot(filename, title_suffix, plots_to_draw):
     """
     plots_to_draw is a list of tuples: (y_col_name, label_name, color, line_style)
     """
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(10, 6))
 
-    # Plot the requested lines
+    # Plot the requested lines multiplied by 100 to show as standard clean integers
     for col, label, color, style in plots_to_draw:
-        plt.plot(df['point_win_prob'], df[col], marker='o', color=color, linestyle=style, linewidth=2, label=label)
+        plt.plot(df['point_win_prob'] * 100, df[col] * 100, marker='o', color=color, linestyle=style, linewidth=2, label=label)
 
-    plt.axhline(0.5, color='gray', linestyle='--', alpha=0.5)
-    plt.axvline(0.5, color='gray', linestyle='--', alpha=0.5)
+    plt.axhline(50, color='gray', linestyle='--', alpha=0.5)
+    plt.axvline(50, color='gray', linestyle='--', alpha=0.5)
+
+    # Set x ticks every 1 (from 40 to 60) and y ticks every 10 (from 0 to 100)
+    plt.xticks(range(40, 61))
+    plt.yticks(range(0, 101, 10))
 
     title = f'Point Win Probability vs. Match Win Probability\n{title_suffix}\nNum simulated matches: {num_matches:,}'
     plt.title(title, fontsize=12, pad=15)
-    plt.xlabel('Point Win Probability', fontsize=11)
-    plt.ylabel('Match Win Probability', fontsize=11)
+    plt.xlabel('Point Win Probability (%)', fontsize=11)
+    plt.ylabel('Match Win Probability (%)', fontsize=11)
     plt.grid(True, alpha=0.3)
     plt.legend()
 
